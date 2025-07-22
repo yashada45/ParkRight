@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+instance/
+config.py  # if you store secrets or config here
+*.sqlite3
+*.db
+*.log
+*.pdf  # ignore project_report.pdf if not needed in GitHub
+venv/
+ENV/
+env/
+.venv/
+.DS_Store
+Thumbs.db
+.vscode/
