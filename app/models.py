@@ -1,7 +1,9 @@
 from app import db
+from flask_login import UserMixin
 from datetime import datetime
 
-class User(db.Model):
+# user model
+class User(UserMixin, db.Model):
     __tablename__ = 'users'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -15,6 +17,7 @@ class User(db.Model):
     def __repr__(self):
         return f"<User {self.email}>"
 
+# parking lot model
 class ParkingLot(db.Model):
     __tablename__ = 'parking_lots'
     
@@ -30,6 +33,7 @@ class ParkingLot(db.Model):
     def __repr__(self):
         return f"<ParkingLot {self.prime_location_name}>"
 
+# parking spot model
 class ParkingSpot(db.Model):
     __tablename__ = 'parking_spots'
     
@@ -42,6 +46,7 @@ class ParkingSpot(db.Model):
     def __repr__(self):
         return f"<Spot {self.id} in Lot {self.lot_id} - Status {self.status}>"
 
+# reservation model
 class Reservation(db.Model):
     __tablename__ = 'reservations'
     
