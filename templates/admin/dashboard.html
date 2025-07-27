@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 rounded">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
+            <div class="d-flex">
+                <a class="btn btn-outline-primary me-2" href="{{ url_for('admin.dashboard') }}">Home</a>
+                <a class="btn btn-outline-primary me-2" href="{{ url_for('admin.list_users') }}">Users</a>
+                <a class="btn btn-danger" href="{{ url_for('auth.logout') }}">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <h2 class="mb-4">Parking Lots</h2>
+    
+    <div class="row">
+        {% for lot in lots_data %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Lot #{{ lot.details.id }}</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        <strong>Prime location name:</strong> {{ lot.details.prime_location_name }}<br>
+                        <strong>Address:</strong> {{ lot.details.address }}<br>
+                        <strong>Price/Hour:</strong> ₹{{ "%.2f"|format(lot.details.price_per_hour) }}<br>
+                        <strong>Spots:</strong> {{ lot.occupied_spots }}/{{ lot.total_spots }} occupied
+                    </p>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('admin.view_spots', lot_id=lot.details.id) }}" 
+                            class="btn btn-sm btn-info">View Spots</a>
+                        <a href="{{ url_for('admin.edit_lot', lot_id=lot.details.id) }}" 
+                            class="btn btn-sm btn-warning">Edit</a>
+                        <form method="POST" action="{{ url_for('admin.delete_lot', lot_id=lot.details.id) }}"
+                              onsubmit="return confirm('Delete this lot?');">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('admin.create_lot') }}" class="btn btn-success btn-lg">
+            <i class="bi bi-plus-circle"></i> Add New Lot
+        </a>
+    </div>
+</div>
+{% endblock %}
