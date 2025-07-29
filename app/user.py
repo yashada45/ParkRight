@@ -33,6 +33,7 @@ def dashboard():
 @user.route('/reserve', methods=['POST'])
 @login_required
 def reserve():
+    # backend validation
     if Reservation.query.filter_by(user_id=current_user.id, leaving_timestamp=None).first():
         flash('You already have an active reservation.', 'danger')
         return redirect(url_for('user.dashboard'))
