@@ -54,10 +54,22 @@ class Reservation(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     spot_id = db.Column(db.Integer, db.ForeignKey('parking_spots.id'), nullable=False)
     
-    parking_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    parking_timestamp = db.Column(db.DateTime, nullable=True)
     leaving_timestamp = db.Column(db.DateTime, nullable=True)
 
     cost = db.Column(db.Float, nullable=True)
 
+    @property
+    def duration(self):
+        if self.parking_timestamp and self.leaving_timestamp:
+            delta = self.leaving_timestamp - self.parking_timestamp
+            hours, remainder = divmod(delta.total_seconds(), 3600)
+            minutes, _ = divmod(remainder, 60)
+            return f"{int(hours)}h {int(minutes)}m"
+        return "N/A"
+
+    def __repr__(self):
+        return f"<Reservation User:{self.user_id} Spot:{self.spot_id}>"
+    
     def __repr__(self):
         return f"<Reservation User:{self.user_id} Spot:{self.spot_id}>"

@@ -252,3 +252,11 @@ def list_users():
         })
         
     return render_template('admin/users.html', users_data=users_data)
+
+# Reservation
+@admin.route('/reservations')
+@login_required
+@admin_required
+def list_reservations():
+    all_reservations = Reservation.query.order_by(Reservation.id.desc()).all()
+    return render_template('admin/reservations.html', reservations=all_reservations)

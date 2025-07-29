@@ -7,6 +7,7 @@
             <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
             <div class="d-flex">
                 <a class="btn btn-outline-primary me-2" href="{{ url_for('admin.dashboard') }}">Home</a>
+                <a class="btn btn-outline-primary me-2" href="{{ url_for('admin.list_reservations') }}">Reservations</a>
                 <a class="btn btn-outline-primary me-2" href="{{ url_for('admin.list_users') }}">Users</a>
                 <a class="btn btn-danger" href="{{ url_for('auth.logout') }}">Logout</a>
             </div>

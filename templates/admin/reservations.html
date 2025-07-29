@@ -1,15 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Parking History{% endblock %}
+{% block title %}All Reservations{% endblock %}
 
 {% block content %}
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <a href="{{ url_for('user.dashboard') }}" class="text-decoration-none">&larr; Back to Dashboard</a>
-            <h2 class="h2 mt-2">Your Parking History</h2>
+            <a href="{{ url_for('admin.dashboard') }}" class="text-decoration-none">&larr; Back to Dashboard</a>
+            <h2 class="h2 mt-2">All Parking Records</h2>
         </div>
-        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
     </div>
 
     <div class="card shadow-sm">
@@ -18,10 +17,10 @@
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
+                            <th scope="col">User</th>
                             <th scope="col">Lot Name</th>
                             <th scope="col">Spot ID</th>
-                            <th scope="col">Parked On</th>
-                            <th scope="col">Released On</th>
+                            <th scope="col">Status</th>
                             <th scope="col">Duration</th>
                             <th scope="col">Cost</th>
                         </tr>
@@ -30,22 +29,14 @@
                         {% if reservations %}
                             {% for res in reservations %}
                             <tr>
+                                <td>{{ res.user.full_name }}</td>
                                 <td>{{ res.spot.lot.prime_location_name }}</td>
                                 <td>#{{ res.spot_id }}</td>
                                 <td>
-                                    {% if res.parking_timestamp %}
-                                        {{ res.parking_timestamp.strftime('%d-%b-%Y %I:%M %p') }}
-                                    {% else %}
-                                        <span class="badge bg-warning text-dark">Awaiting Occupancy</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if res.leaving_timestamp %}
-                                        {{ res.leaving_timestamp.strftime('%d-%b-%Y %I:%M %p') }}
-                                    {% elif res.spot.status == 'O' %}
+                                    {% if not res.leaving_timestamp %}
                                         <span class="badge bg-success">Active</span>
                                     {% else %}
-                                        -
+                                        <span class="badge bg-secondary">Completed</span>
                                     {% endif %}
                                 </td>
                                 <td>{{ res.duration }}</td>
@@ -60,7 +51,7 @@
                             {% endfor %}
                         {% else %}
                             <tr>
-                                <td colspan="6" class="text-center">You have no parking history yet.</td>
+                                <td colspan="6" class="text-center">No reservations have been made yet.</td>
                             </tr>
                         {% endif %}
                     </tbody>
