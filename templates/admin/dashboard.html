@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <div class="container mt-4">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 rounded">
+    <nav class="navbar navbar-expand-lg navbar-light mb-4 rounded transparent-ui">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a>
             <div class="d-flex">
@@ -14,13 +15,13 @@
         </div>
     </nav>
 
-    <h2 class="mb-4">Parking Lots</h2>
+    <h2 class="mb-4 text-white">Parking Lots</h2>
     
     <div class="row">
         {% for lot in lots_data %}
         <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
+            <div class="card shadow-sm transparent-ui">
+                <div class="card-header" style="background-color: #000000da; color: white;">
                     <h5 class="mb-0">Lot #{{ lot.details.id }}</h5>
                 </div>
                 <div class="card-body">
@@ -32,9 +33,9 @@
                     </p>
                     <div class="d-flex justify-content-between">
                         <a href="{{ url_for('admin.view_spots', lot_id=lot.details.id) }}" 
-                            class="btn btn-sm btn-info">View Spots</a>
+                           class="btn btn-sm btn-info">View Spots</a>
                         <a href="{{ url_for('admin.edit_lot', lot_id=lot.details.id) }}" 
-                            class="btn btn-sm btn-warning">Edit</a>
+                           class="btn btn-sm btn-warning">Edit</a>
                         <form method="POST" action="{{ url_for('admin.delete_lot', lot_id=lot.details.id) }}"
                               onsubmit="return confirm('Delete this lot?');">
                             <button type="submit" class="btn btn-sm btn-danger">Delete</button>

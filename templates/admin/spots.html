@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <div class="container mt-4">
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Spots - Lot #{{ lot.id }}</li>
+            <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}" class="text-white fw-bold">Dashboard</a></li>
+            <li class="breadcrumb-item active text-white" aria-current="page">Spots - Lot #{{ lot.id }}</li>
         </ol>
     </nav>
 
     <form action="{{ url_for('admin.delete_spots') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete the selected spots?');">
         <input type="hidden" name="lot_id" value="{{ lot.id }}">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white">
+        <div class="card shadow-sm mb-4 transparent-card rounded-3">
+            <div class="card-header bg-dark text-white">
                 <div class="d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">Parking Spots - {{ lot.prime_location_name }}</h4>
                     <span class="badge bg-light text-dark fs-6">{{ occupied_spots }}/{{ lot.max_spots }} occupied</span>
@@ -89,7 +90,7 @@
         </div>
         
         <div class="d-flex justify-content-between align-items-center mt-3">
-            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">&larr; Back to Dashboard</a>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-light">&larr; Back to Dashboard</a>
             <button type="submit" class="btn btn-danger">Delete Selected Spots</button>
         </div>
     </form>

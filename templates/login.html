@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="text-center">{{ title }}</h3>
+
+<div class="container-fluid">
+    <div class="row min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="col-md-6 col-lg-6   ">
+            <div class="card login-card">
+                <div class="card-header text-center py-3">
+                    <h2 class="mb-0">{{ title }}</h2>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-4">
                     {% with messages = get_flashed_messages(with_categories=true) %}
                         {% if messages %}
                             {% for category, message in messages %}
@@ -26,7 +27,7 @@
                             <input type="password" class="form-control" id="password" name="password" required>
                         </div>
                         <div class="d-grid mb-3">
-                            <button type="submit" class="btn" style="background-color: #6095e3; color: white;">Login</button>
+                            <button type="submit" class="btn btn-primary">Login</button>
                         </div>
                         <div class="text-center">
                             <a href="{{ url_for('auth.register') }}">Create account</a>
