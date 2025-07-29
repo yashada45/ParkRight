@@ -146,6 +146,45 @@ def view_spots(lot_id):
         occupied_spots=occupied_count, 
         available_spots=available_count
     )
+    
+@admin.route('/spots/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_spots():
+    spot_ids_to_delete = request.form.getlist('spot_ids')
+    lot_id = request.form.get('lot_id')
+
+    if not lot_id:
+        flash('An error occurred: Lot ID is missing.', 'danger')
+        return redirect(url_for('admin.dashboard'))
+
+    if not spot_ids_to_delete:
+        flash('No spots were selected for deletion.', 'warning')
+        return redirect(url_for('admin.view_spots', lot_id=lot_id))
+
+    deleted_count = 0
+    for spot_id in spot_ids_to_delete:
+        spot = ParkingSpot.query.get(spot_id)
+        # Final safety check: ensure the spot is available before deleting
+        if spot and spot.status == 'A':
+            db.session.delete(spot)
+            deleted_count += 1
+    
+    # Update the max_spots count on the parent lot to keep it accurate
+    if deleted_count > 0:
+        lot = ParkingLot.query.get(lot_id)
+        if lot:
+            lot.max_spots -= deleted_count
+
+    db.session.commit()
+    
+    if deleted_count > 0:
+        flash(f'{deleted_count} spots were successfully deleted.', 'success')
+    else:
+        # This happens if the user only selected occupied (disabled) spots
+        flash('No available spots were selected to delete.', 'info')
+
+    return redirect(url_for('admin.view_spots', lot_id=lot_id))
 
 # vacate spot
 @admin.route('/spots/<int:spot_id>/release', methods=['POST'])
