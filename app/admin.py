@@ -34,7 +34,7 @@ def dashboard():
         
     return render_template('admin/dashboard.html', lots_data=lots_data)
 
-# new parking lot
+# New parking lot
 @admin.route('/lots/create', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -81,15 +81,15 @@ def edit_lot(lot_id):
         current_spots = len(lot.spots)
 
         if new_max_spots > current_spots:
-            # Add new spots
             for _ in range(new_max_spots - current_spots):
                 new_spot = ParkingSpot(lot_id=lot.id, status='A')
                 db.session.add(new_spot)
         elif new_max_spots < current_spots:
-            # Remove extra spots if available
-            removable_spots = ParkingSpot.query.filter_by(
-                lot_id=lot.id, 
-                status='A'
+            # Query for spots that are available and have no reservations.
+            removable_spots = ParkingSpot.query.outerjoin(Reservation).filter(
+                ParkingSpot.lot_id == lot.id,
+                ParkingSpot.status == 'A',
+                Reservation.id == None
             ).limit(current_spots - new_max_spots).all()
             
             if len(removable_spots) == (current_spots - new_max_spots):
@@ -125,7 +125,7 @@ def delete_lot(lot_id):
     flash('Parking lot deleted.', 'success')
     return redirect(url_for('admin.dashboard'))
 
-# view spots
+# View spots
 @admin.route('/lots/<int:lot_id>/spots')
 @login_required
 @admin_required
@@ -133,7 +133,7 @@ def view_spots(lot_id):
     lot = ParkingLot.query.get_or_404(lot_id)
     
     spots = ParkingSpot.query.options(
-        db.joinedload(ParkingSpot.reservation).joinedload(Reservation.user)
+        db.joinedload(ParkingSpot.reservations).joinedload(Reservation.user)
     ).filter_by(lot_id=lot.id).order_by(ParkingSpot.id).all()
     
     occupied_count = sum(1 for spot in spots if spot.status == 'O')
@@ -147,6 +147,7 @@ def view_spots(lot_id):
         available_spots=available_count
     )
     
+# Delete spots
 @admin.route('/spots/delete', methods=['POST'])
 @login_required
 @admin_required
@@ -165,12 +166,10 @@ def delete_spots():
     deleted_count = 0
     for spot_id in spot_ids_to_delete:
         spot = ParkingSpot.query.get(spot_id)
-        # Final safety check: ensure the spot is available before deleting
         if spot and spot.status == 'A':
             db.session.delete(spot)
             deleted_count += 1
     
-    # Update the max_spots count on the parent lot to keep it accurate
     if deleted_count > 0:
         lot = ParkingLot.query.get(lot_id)
         if lot:
@@ -181,7 +180,6 @@ def delete_spots():
     if deleted_count > 0:
         flash(f'{deleted_count} spots were successfully deleted.', 'success')
     else:
-        # This happens if the user only selected occupied (disabled) spots
         flash('No available spots were selected to delete.', 'info')
 
     return redirect(url_for('admin.view_spots', lot_id=lot_id))
@@ -192,12 +190,30 @@ def delete_spots():
 @admin_required
 def release_spot(spot_id):
     spot = ParkingSpot.query.get_or_404(spot_id)
-    if spot.status == 'O' and spot.reservation:
-        # End reservation and free the spot
-        spot.reservation.leaving_timestamp = datetime.utcnow()
-        spot.status = 'A'
-        db.session.commit()
-        flash('Spot released successfully', 'success')
+    
+    if spot.status == 'O':
+        active_reservation = Reservation.query.filter_by(
+            spot_id=spot.id, 
+            leaving_timestamp=None
+        ).first()
+
+        if active_reservation:
+            # End reservation, calculate cost, free the spot
+            active_reservation.leaving_timestamp = datetime.utcnow()
+            
+            duration_seconds = (active_reservation.leaving_timestamp - active_reservation.parking_timestamp).total_seconds()
+            duration_hours = max(duration_seconds / 3600, 1/60) # cost logic
+            cost = duration_hours * spot.lot.price_per_hour
+            active_reservation.cost = round(cost, 2)
+
+            spot.status = 'A'
+            db.session.commit()
+            flash('Spot released successfully', 'success')
+        else:
+            flash('Could not find an active reservation for this spot.', 'danger')
+    else:
+        flash('This spot is not occupied.', 'warning')
+        
     return redirect(url_for('admin.view_spots', lot_id=spot.lot_id))
 
 # List users
@@ -205,20 +221,34 @@ def release_spot(spot_id):
 @login_required
 @admin_required
 def list_users():
-    users = User.query.filter_by(is_admin=False).all()
-    user_data = []
+    users = User.query.filter_by(is_admin=False).order_by(User.full_name).all()
     
-    # user data
+    users_data = []
     for user in users:
-        latest_reservation = Reservation.query.filter_by(user_id=user.id).order_by(Reservation.id.desc()).first()
-        spot_status = 'N/A'
-        if latest_reservation and latest_reservation.spot:
-            spot_status = latest_reservation.spot.status
-        user_data.append({
-            'id': user.id,
-            'email': user.email,
-            'full_name': user.full_name,
-            'spot_status': spot_status
+        active_reservation = Reservation.query.filter_by(
+            user_id=user.id, 
+            leaving_timestamp=None
+        ).first()
+        
+        if active_reservation:
+            spot = active_reservation.spot
+            status_text = f"Currently Parked at {spot.lot.prime_location_name} (Spot #{spot.id})"
+            status_class = "success"
+        else:
+            # 2. Check for any past reservations
+            past_reservation = Reservation.query.filter_by(user_id=user.id).first()
+            if past_reservation:
+                status_text = "Previously Parked"
+                status_class = "secondary"
+            else:
+                # 3. If no reservations at all
+                status_text = "Never Parked"
+                status_class = "light"
+
+        users_data.append({
+            'user': user,
+            'status_text': status_text,
+            'status_class': status_class
         })
         
-    return render_template('admin/users.html', users=user_data)
+    return render_template('admin/users.html', users_data=users_data)

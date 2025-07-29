@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Parking History{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{{ url_for('user.dashboard') }}" class="text-decoration-none">&larr; Back to Dashboard</a>
+            <h2 class="h2 mt-2">Your Parking History</h2>
+        </div>
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Lot Name</th>
+                            <th scope="col">Spot ID</th>
+                            <th scope="col">Parked On</th>
+                            <th scope="col">Released On</th>
+                            <th scope="col">Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if reservations %}
+                            {% for res in reservations %}
+                            <tr>
+                                <td>{{ res.spot.lot.prime_location_name }}</td>
+                                <td>#{{ res.spot_id }}</td>
+                                <td>{{ res.parking_timestamp.strftime('%d-%b-%Y %I:%M %p') }}</td>
+                                <td>
+                                    {% if res.leaving_timestamp %}
+                                        {{ res.leaving_timestamp.strftime('%d-%b-%Y %I:%M %p') }}
+                                    {% else %}
+                                        <span class="badge bg-success">Currently Parked</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if res.cost is not none %}
+                                        ₹{{ "%.2f"|format(res.cost) }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">You have no parking history yet.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -10,44 +10,19 @@
     </nav>
 
     <form action="{{ url_for('admin.delete_spots') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete the selected spots?');">
-        
         <input type="hidden" name="lot_id" value="{{ lot.id }}">
-
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-primary text-white">
                 <div class="d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">Parking Spots - {{ lot.prime_location_name }}</h4>
-                    <span class="badge bg-light text-dark fs-6">
-                        {{ occupied_spots }}/{{ lot.max_spots }} occupied
-                    </span>
+                    <span class="badge bg-light text-dark fs-6">{{ occupied_spots }}/{{ lot.max_spots }} occupied</span>
                 </div>
             </div>
             <div class="card-body">
                 <div class="row mb-4">
-                    <div class="col-md-4">
-                        <div class="card bg-success bg-opacity-10 border-success">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">{{ available_spots }}</h5>
-                                <p class="card-text text-success">Available</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card bg-danger bg-opacity-10 border-danger">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">{{ occupied_spots }}</h5>
-                                <p class="card-text text-danger">Occupied</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card bg-secondary bg-opacity-10 border-secondary">
-                            <div class="card-body text-center">
-                                <h5 class="card-title">{{ lot.max_spots }}</h5>
-                                <p class="card-text">Total Spots</p>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="col-md-4"><div class="card bg-success bg-opacity-10 border-success"><div class="card-body text-center"><h5 class="card-title">{{ available_spots }}</h5><p class="card-text text-success">Available</p></div></div></div>
+                    <div class="col-md-4"><div class="card bg-danger bg-opacity-10 border-danger"><div class="card-body text-center"><h5 class="card-title">{{ occupied_spots }}</h5><p class="card-text text-danger">Occupied</p></div></div></div>
+                    <div class="col-md-4"><div class="card bg-secondary bg-opacity-10 border-secondary"><div class="card-body text-center"><h5 class="card-title">{{ lot.max_spots }}</h5><p class="card-text">Total Spots</p></div></div></div>
                 </div>
 
                 <div class="table-responsive">
@@ -67,34 +42,42 @@
                             <tr>
                                 <td>
                                     <input class="form-check-input" type="checkbox" name="spot_ids" value="{{ spot.id }}"
-                                           {% if spot.status == 'O' %}disabled{% endif %}>
+                                           {% if spot.status != 'A' %}disabled{% endif %}>
                                 </td>
                                 <td>{{ spot.id }}</td>
                                 <td>
-                                    <span class="badge rounded-pill {% if spot.status == 'A' %}bg-success{% else %}bg-danger{% endif %}">
-                                        {{ 'Available' if spot.status == 'A' else 'Occupied' }}
+                                    <span class="badge rounded-pill 
+                                        {% if spot.status == 'A' %}bg-success
+                                        {% elif spot.status == 'O' %}bg-danger
+                                        {% elif spot.status == 'R' %}bg-warning text-dark
+                                        {% endif %}">
+                                        {{ 'Available' if spot.status == 'A' else ('Occupied' if spot.status == 'O' else 'Reserved') }}
                                     </span>
                                 </td>
                                 <td>
-                                    {% if spot.reservation %}
-                                        {{ spot.reservation.user.email }}
+                                    {% set active_res = spot.reservations|selectattr("leaving_timestamp", "equalto", none)|first %}
+                                    {% if active_res %}
+                                        {{ active_res.user.email }}
                                     {% else %}
                                         -
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if spot.reservation %}
-                                        {{ spot.reservation.parking_timestamp.strftime('%Y-%m-%d %H:%M') }}
+                                    {% set active_res = spot.reservations|selectattr("leaving_timestamp", "equalto", none)|first %}
+                                    {% if active_res and active_res.parking_timestamp %}
+                                        {{ active_res.parking_timestamp.strftime('%Y-%m-%d %H:%M') }}
                                     {% else %}
                                         -
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if spot.status == 'O' %}
-                                    <form method="POST" action="{{ url_for('admin.release_spot', spot_id=spot.id) }}"
-                                          onsubmit="return confirm('Force release this spot?');">
-                                        <button type="submit" class="btn btn-sm btn-warning">Release</button>
-                                    </form>
+                                    <button type="submit" class="btn btn-sm btn-warning"
+                                            formaction="{{ url_for('admin.release_spot', spot_id=spot.id) }}"
+                                            formmethod="POST"
+                                            onclick="return confirm('Force release this spot?');">
+                                        Release
+                                    </button>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -106,9 +89,7 @@
         </div>
         
         <div class="d-flex justify-content-between align-items-center mt-3">
-            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">
-                &larr; Back to Dashboard
-            </a>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary">&larr; Back to Dashboard</a>
             <button type="submit" class="btn btn-danger">Delete Selected Spots</button>
         </div>
     </form>

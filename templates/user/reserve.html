@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Reservation Confirmation{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card text-center shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Spot Reserved!</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">You have successfully reserved Spot #{{ reservation.spot.id }}</h5>
+                    <p class="card-text">at <strong>{{ reservation.spot.lot.prime_location_name }}</strong>.</p>
+                    <hr>
+                    <p class="text-muted">Once you have arrived and parked your vehicle in the designated spot, please click the button below to start the timer.</p>
+                    <form action="{{ url_for('user.occupy', reservation_id=reservation.id) }}" method="POST">
+                        <button type="submit" class="btn btn-primary btn-lg">I Have Parked</button>
+                    </form>
+                </div>
+                <div class="card-footer text-muted">
+                    This reservation is waiting for you to occupy it.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -26,11 +26,13 @@ def create_app():
     from app.routes import main as main_blueprint
     from app.routes import auth
     from app.admin import admin as admin_blueprint
+    from app.user import user as user_blueprint
     
     
     app.register_blueprint(main_blueprint)
     app.register_blueprint(auth)
     app.register_blueprint(admin_blueprint)
+    app.register_blueprint(user_blueprint)
 
     return app
 
