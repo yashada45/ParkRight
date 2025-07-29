@@ -6,7 +6,7 @@ from datetime import datetime
 
 admin = Blueprint('admin', __name__, url_prefix='/admin')
 
-# Decorator to restrict access to admin users only
+# FLASK LOGIN INTEGRATION AND SECURITY
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
