@@ -87,7 +87,8 @@ def release(reservation_id):
     if reservation.user_id != current_user.id or reservation.spot.status != 'O':
         flash('This reservation cannot be released at this time.', 'danger')
         return redirect(url_for('user.dashboard'))
-
+    
+    # cost calculation logic for milestone
     reservation.leaving_timestamp = datetime.utcnow()
     
     duration_seconds = (reservation.leaving_timestamp - reservation.parking_timestamp).total_seconds()
