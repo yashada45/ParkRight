@@ -1,113 +1,112 @@
-ParkRight - Vehicle Parking Management App
-ParkRight is a full-stack web application built with Flask and SQLite that provides a complete solution for managing vehicle parking lots. It features a robust role-based system for administrators and a seamless booking experience for users.
+# ParkRight - Vehicle Parking Management App 🅿️
 
-Key Features
-Admin Panel:
+[![MIT License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://choosealicense.com/licenses/mit/)
+[![GitHub stars](https://img.shields.io/github/stars/yashada45/ParkRight?style=for-the-badge)](https://github.com/yashada45/ParkRight/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/yashada45/ParkRight?style=for-the-badge)](https://github.com/yashada45/ParkRight/network/members)
+[![GitHub issues](https://img.shields.io/github/issues/yashada45/ParkRight?style=for-the-badge)](https://github.com/yashada45/ParkRight/issues)
 
-Full CRUD Functionality: Create, read, update, and delete parking lots.
+---
 
-Dynamic Spot Management: Automatically generate or remove parking spots when a lot's capacity is changed.
+## 📝 About The Project
 
-Live Monitoring: View a real-time status table of every spot in a lot (Available, Reserved, Occupied).
+ParkRight is a full-stack web application built with **Flask** and **SQLite** that provides a complete solution for managing vehicle parking lots.  
+It features a robust role-based system for administrators and a seamless booking experience for users.
 
-User Oversight: See a complete list of all registered users and their current parking status.
+---
 
-Reservation History: Access a global log of every parking reservation made in the system.
+## 💻 Tech Stack
 
-User Dashboard:
+![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)  
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)  
+![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)  
+![Bootstrap](https://img.shields.io/badge/bootstrap-%238511FA.svg?style=for-the-badge&logo=bootstrap&logoColor=white)  
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)  
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)  
+![Jinja](https://img.shields.io/badge/jinja-A91E1E.svg?style=for-the-badge&logo=jinja&logoColor=white)
 
-Simple Authentication: Easy registration and login for all users.
+---
 
-Real-Time Lot Availability: View a list of all parking lots with live counts of available spots.
+## ✨ Features
 
-Three-Step Parking Workflow: A clear Reserve -> Occupy -> Release process.
+### 👑 Admin Panel
+- **Full CRUD Functionality**: Create, read, update, and delete parking lots.
+- **Dynamic Spot Management**: Automatically manage parking spots based on lot capacity.
+- **Live Monitoring**: View a real-time status table of every spot in a lot.
+- **User Oversight**: See a complete list of all registered users and their status.
+- **Global History**: Access a system-wide log of all parking reservations.
 
-Automated Billing: The system automatically calculates the duration and final cost upon releasing a spot.
+### 👤 User Dashboard
+- **Simple Authentication**: Easy registration and login.
+- **Real-Time Availability**: View live counts of available spots in all lots.
+- **Parking Workflow**: A clear **Reserve → Occupy → Release** process.
+- **Automated Billing**: Automatically calculates cost upon releasing a spot.
+- **Personal History**: View a complete history of all personal parking sessions.
 
-Personal History: Users can view a complete history of all their past and current parking sessions.
+---
 
-Technologies Used
-Backend: Python, Flask, Flask-SQLAlchemy, Flask-Login
+## 🚀 Getting Started
 
-Database: SQLite
+Follow these steps to get a local copy up and running.
 
-Frontend: HTML5, CSS3, Jinja2, Bootstrap 5
+### **Prerequisites**
+- Python 3.8+
+- Git
 
-Password Security: Werkzeug
+### **Installation**
 
-Setup and Installation
-Follow these steps to get the project running on your local machine.
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yashada45/ParkRight.git
+   cd ParkRight
+   ```
 
-1. Prerequisites:
+2. **Create and activate a virtual environment**
 
-Python 3.8 or higher
+   **On Windows:**
+   ```bash
+   python -m venv venv
+   .\venv\Scripts\activate
+   ```
 
-Git
+   **On macOS / Linux:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
 
-2. Clone the Repository:
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-git clone <your-repository-url>
-cd vehicle-parking-app
+4. **Initialize the database and create the admin user**
+   ```bash
+   python create_db.py
+   ```
 
-3. Create and Activate a Virtual Environment:
+5. **Run the application**
+   ```bash
+   python app.py
+   ```
 
-Windows:
+The app will be available at **http://127.0.0.1:5000**.
 
-python -m venv venv
-.\venv\Scripts\activate
+---
 
-macOS / Linux:
+## 📖 Usage
 
-python3 -m venv venv
-source venv/bin/activate
+Navigate to [http://127.0.0.1:5000](http://127.0.0.1:5000) in your browser.  
+You can register as a new user or log in with the default admin credentials:
 
-4. Install Dependencies:
-Install all the required packages from the requirements.txt file.
-
-pip install -r requirements.txt
-
-5. Create the Database:
-Run the create_db.py script to generate the app.db file and create the predefined admin user.
-
-python create_db.py
-
-You should see a message confirming that the database setup is complete and the admin user has been created.
-
-6. Run the Application:
-Start the Flask development server.
-
-python app.py
-
-The application will now be running at http://127.0.0.1:5000.
-
-How to Use the Application
-Navigate to http://127.0.0.1:5000 in your web browser.
-
-You can either register a new user account or log in as the administrator.
-
-Admin Credentials:
-
+```
 Email: admin@vpapp.com
-
 Password: admin123
+```
 
-Issues Encountered & Resolutions
-During development, several key issues were identified and resolved:
+---
 
-Database Integrity Error on Spot Deletion:
+## 🌐 Contact
 
-Issue: The application would crash with an IntegrityError when an admin tried to reduce a lot's capacity if a spot had a past reservation.
+**Yashada Mathad** - [LinkedIn](https://linkedin.com/in/yashada-mathad-27131928b) - yashada45@gmail.com  
 
-Resolution: The logic was fixed to only allow the deletion of spots that are both "Available" and have no associated reservation history, thus preserving data integrity.
-
-Incorrect Occupancy Count:
-
-Issue: The system incorrectly tracked occupied spots because the ParkingSpot model had a one-to-one relationship with Reservation, causing old reservation links to be overwritten.
-
-Resolution: The model was corrected to a one-to-many relationship (one spot -> many reservations), and all functions were updated to query for the currently active reservation for a spot.
-
-Nested HTML Forms Bug:
-
-Issue: On the "View Spots" page, the "Release" button was incorrectly triggering the "Delete Spots" action.
-
-Resolution: The nested <form> tag was removed, and the formaction attribute was used on the "Release" button to correctly point it to the release_spot route, resolving the conflict.
+**Project Link:** [https://github.com/yashada45/ParkRight](https://github.com/yashada45/ParkRight)
