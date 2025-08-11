@@ -70,6 +70,3 @@ class Reservation(db.Model):
 
     def __repr__(self):
         return f"<Reservation User:{self.user_id} Spot:{self.spot_id}>"
-    
-    def __repr__(self):
-        return f"<Reservation User:{self.user_id} Spot:{self.spot_id}>"
