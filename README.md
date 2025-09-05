@@ -1,10 +1,5 @@
 # ParkRight - Vehicle Parking Management App 🅿️
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://choosealicense.com/licenses/mit/)
-[![GitHub stars](https://img.shields.io/github/stars/yashada45/ParkRight?style=for-the-badge)](https://github.com/yashada45/ParkRight/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/yashada45/ParkRight?style=for-the-badge)](https://github.com/yashada45/ParkRight/network/members)
-[![GitHub issues](https://img.shields.io/github/issues/yashada45/ParkRight?style=for-the-badge)](https://github.com/yashada45/ParkRight/issues)
-
 ---
 
 ## 📝 About The Project
@@ -110,3 +105,4 @@ Password: admin123
 **Yashada Mathad** - [LinkedIn](https://linkedin.com/in/yashada-mathad-27131928b) - yashada45@gmail.com  
 
 **Project Link:** [https://github.com/yashada45/ParkRight](https://github.com/yashada45/ParkRight)
+
